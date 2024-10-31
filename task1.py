@@ -29,8 +29,7 @@ def long_division(dividend, divider):
     output_lines = []
 
     if divider_int == 0:
-        return f"{dividend_str}|{divider_int}\nОшибка: деление на ноль"
-
+        return f"{dividend_str}|{divider_int}\n"
 
     if dividend < divider_int:
         output_lines.append(f"{dividend_str}|{divider_int}")
@@ -116,7 +115,6 @@ def main():
     print(long_division(123456789, 531))
     print()
     print(long_division(425934261694251, 12345678))
-
 
 if __name__ == '__main__':
     main()
