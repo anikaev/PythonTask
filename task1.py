@@ -26,69 +26,69 @@ def long_division(dividend, divider):
 
     dividend_str = str(dividend)
     divider_int = int(divider)
-    output_lines = []
+    line = []
 
     if divider_int == 0:
         return f"{dividend_str}|{divider_int}\n"
 
     if dividend < divider_int:
-        output_lines.append(f"{dividend_str}|{divider_int}")
-        output_lines.append(f"{' ' * len(dividend_str)}|0")
-        return '\n'.join(output_lines)
+        line.append(f"{dividend_str}|{divider_int}")
+        line.append(f"{' ' * len(dividend_str)}|0")
+        return '\n'.join(line)
 
 
     idx = 0
-    current_num = int(dividend_str[idx])
-    quotient_str = ''
-    steps = []
-    positions = []
+    nw_num = int(dividend_str[idx])
+    chis = ''
+    step = []
+    pos = []
 
     while (idx < len(dividend_str)):
 
-        while current_num < divider_int and idx + 1 < len(dividend_str):
+        while nw_num < divider_int and idx + 1 < len(dividend_str):
             idx += 1
-            current_num = current_num * 10 + int(dividend_str[idx])
-            if len(quotient_str) > 0:
-                quotient_str += '0'
+            nw_num = nw_num * 10 + int(dividend_str[idx])
+            if len(chis) > 0:
+                chis += '0'
 
-        if current_num < divider_int and idx + 1 == len(dividend_str):
-            quotient_str += '0'
+        if nw_num < divider_int and idx + 1 == len(dividend_str):
+            chis += '0'
             break
 
-        partial_quotient = current_num // divider_int
-        product = partial_quotient * divider_int
-        remainder = current_num - product
-        quotient_str += str(partial_quotient)
-        positions.append(idx - len(str(current_num)) + 1)
-        steps.append((positions[-1], current_num, product))
+        quot = nw_num // divider_int
+        prd = quot * divider_int
+        pm = nw_num - prd
+        chis += str(quot)
+        pos.append(idx - len(str(nw_num)) + 1)
+        step.append((pos[-1], nw_num, prd))
         idx += 1
         if idx < len(dividend_str):
-            current_num = remainder * 10 + int(dividend_str[idx])
+            nw_num = pm * 10 + int(dividend_str[idx])
         else:
-            current_num = remainder
+            nw_num = pm
 
-    output_lines.append(f"{dividend_str}|{divider_int}")
+    line.append(f"{dividend_str}|{divider_int}")
 
 
-    first_pos = steps[0][0]
-    first_product = steps[0][2]
-    spaces_before_product = ' ' * first_pos
-    spaces_after_product = ' ' * (len(dividend_str) - first_pos - len(str(first_product)))
-    output_lines.append(f"{spaces_before_product}{first_product}{spaces_after_product}|{quotient_str}")
+    first_pos = step[0][0]
+    first_prd = step[0][2]
+    spac_bf_prd = ' ' * first_pos
+    spaces_af_prd = ' ' * (len(dividend_str) - first_pos - len(str(first_prd)))
+    line.append(f"{spac_bf_prd}{first_prd}{spaces_af_prd}|{chis}")
 
-    for i in range(1, len(steps)):
-        pos = steps[i][0]
-        num = steps[i][1]
-        prod = steps[i][2]
+    for i in range(1, len(step)):
+        pos = step[i][0]
+        num = step[i][1]
+        prod = step[i][2]
         spaces = ' ' * pos
-        output_lines.append(f"{spaces}{num}")
-        output_lines.append(f"{spaces}{prod}")
+        line.append(f"{spaces}{num}")
+        line.append(f"{spaces}{prod}")
 
-    last_pos = len(dividend_str) - len(str(current_num))
+    last_pos = len(dividend_str) - len(str(nw_num))
     spaces = ' ' * last_pos
-    output_lines.append(f"{spaces}{current_num}")
+    line.append(f"{spaces}{nw_num}")
 
-    return '\n'.join(output_lines)
+    return '\n'.join(line)
 
 
 def main():
