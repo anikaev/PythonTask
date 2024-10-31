@@ -31,13 +31,13 @@ def long_division(dividend, divider):
     if divider_int == 0:
         return f"{dividend_str}|{divider_int}\nОшибка: деление на ноль"
 
-    # Если делимое меньше делителя, частное равно 0
+
     if dividend < divider_int:
         output_lines.append(f"{dividend_str}|{divider_int}")
         output_lines.append(f"{' ' * len(dividend_str)}|0")
         return '\n'.join(output_lines)
 
-    # Начинаем деление
+
     idx = 0
     current_num = int(dividend_str[idx])
     quotient_str = ''
@@ -45,7 +45,7 @@ def long_division(dividend, divider):
     positions = []
 
     while idx < len(dividend_str):
-        # Формируем число для деления
+
         while current_num < divider_int and idx + 1 < len(dividend_str):
             idx += 1
             current_num = current_num * 10 + int(dividend_str[idx])
@@ -68,18 +68,15 @@ def long_division(dividend, divider):
         else:
             current_num = remainder
 
-    # Формируем строки вывода
-    # Первая строка: делимое и делитель
     output_lines.append(f"{dividend_str}|{divider_int}")
 
-    # Вторая строка: первое произведение и частное
+
     first_pos = steps[0][0]
     first_product = steps[0][2]
     spaces_before_product = ' ' * first_pos
     spaces_after_product = ' ' * (len(dividend_str) - first_pos - len(str(first_product)))
     output_lines.append(f"{spaces_before_product}{first_product}{spaces_after_product}|{quotient_str}")
 
-    # Остальные шаги
     for i in range(1, len(steps)):
         pos = steps[i][0]
         num = steps[i][1]
@@ -88,7 +85,6 @@ def long_division(dividend, divider):
         output_lines.append(f"{spaces}{num}")
         output_lines.append(f"{spaces}{prod}")
 
-    # Выводим последний остаток, выровненный под последней цифрой частного
     last_pos = len(dividend_str) - len(str(current_num))
     spaces = ' ' * last_pos
     output_lines.append(f"{spaces}{current_num}")
