@@ -44,7 +44,7 @@ def long_division(dividend, divider):
     steps = []
     positions = []
 
-    while idx < len(dividend_str):
+    while (idx < len(dividend_str)):
 
         while current_num < divider_int and idx + 1 < len(dividend_str):
             idx += 1
