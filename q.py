@@ -22,66 +22,78 @@ def long_division(dividend, divider):
        246001|123
        246   |2000
             1
-       '''
+    '''
 
-    delimoe_str = str(dividend)
-    delitel_int = int(divider)
-    stroki = []
-    stroki.append(f"{delimoe_str}|{delitel_int}")
+    dividend_str = str(dividend)
+    divider_int = int(divider)
+    output_lines = []
 
-    if delitel_int == 0:
-        stroki.append(f"{delimoe_str}|0")
-        return '\n'.join(stroki)
+    if divider_int == 0:
+        return f"{dividend_str}|{divider_int}\nОшибка: деление на ноль"
 
-    if int(delimoe_str) < delitel_int:
-        stroki[0] += '\n' + (len(delimoe_str))*" " + "|0"
-        return '\n'.join(stroki)
+    # Если делимое меньше делителя, частное равно 0
+    if dividend < divider_int:
+        output_lines.append(f"{dividend_str}|{divider_int}")
+        output_lines.append(f"{' ' * len(dividend_str)}|0")
+        return '\n'.join(output_lines)
 
+    # Начинаем деление
     idx = 0
-    num = int(delimoe_str[idx])
-    chast = ''
-    poz_list = []
+    current_num = int(dividend_str[idx])
+    quotient_str = ''
+    steps = []
+    positions = []
 
-    while idx < len(delimoe_str):
-        while num < delitel_int and idx + 1 < len(delimoe_str):
+    while idx < len(dividend_str):
+        # Формируем число для деления
+        while current_num < divider_int and idx + 1 < len(dividend_str):
             idx += 1
-            num = num * 10 + int(delimoe_str[idx])
-            if len(chast) > 0:
-                chast += '0'
+            current_num = current_num * 10 + int(dividend_str[idx])
+            if len(quotient_str) > 0:
+                quotient_str += '0'
 
-        if num < delitel_int and idx + 1 == len(delimoe_str):
-            chast += '0'
+        if current_num < divider_int and idx + 1 == len(dividend_str):
+            quotient_str += '0'
             break
 
-        chastnoe = num // delitel_int
-        ostatok = num % delitel_int
-        chast += str(chastnoe)
-        poz = idx - len(str(num)) + 1
-        poz_list.append((poz, num, chastnoe * delitel_int))
-        num = ostatok
+        partial_quotient = current_num // divider_int
+        product = partial_quotient * divider_int
+        remainder = current_num - product
+        quotient_str += str(partial_quotient)
+        positions.append(idx - len(str(current_num)) + 1)
+        steps.append((positions[-1], current_num, product))
         idx += 1
+        if idx < len(dividend_str):
+            current_num = remainder * 10 + int(dividend_str[idx])
+        else:
+            current_num = remainder
 
-        if idx < len(delimoe_str):
-            num = num * 10 + int(delimoe_str[idx])
+    # Формируем строки вывода
+    # Первая строка: делимое и делитель
+    output_lines.append(f"{dividend_str}|{divider_int}")
 
-    poz, num, proiz = poz_list[0]
-    probel = ' ' * poz
-    proiz_str = str(proiz)
-    probel_ch = ' ' * (len(delimoe_str) - (poz + len(proiz_str)))
-    stroka2 = f"{probel}{proiz_str}{probel_ch}|{chast}"
-    stroki.append(stroka2)
+    # Вторая строка: первое произведение и частное
+    first_pos = steps[0][0]
+    first_product = steps[0][2]
+    spaces_before_product = ' ' * first_pos
+    spaces_after_product = ' ' * (len(dividend_str) - first_pos - len(str(first_product)))
+    output_lines.append(f"{spaces_before_product}{first_product}{spaces_after_product}|{quotient_str}")
 
-    for i in range(1, len(poz_list)):
-        poz, num, proiz = poz_list[i]
-        probely = ' ' * poz
-        stroki.append(f"{probely}{num}")
-        stroki.append(f"{probely}{proiz}")
+    # Остальные шаги
+    for i in range(1, len(steps)):
+        pos = steps[i][0]
+        num = steps[i][1]
+        prod = steps[i][2]
+        spaces = ' ' * pos
+        output_lines.append(f"{spaces}{num}")
+        output_lines.append(f"{spaces}{prod}")
 
-    if num != 0:
-        probely = ' ' * (idx - len(str(num)))
-        stroki.append(f"{probely}{num}")
+    # Выводим последний остаток, выровненный под последней цифрой частного
+    last_pos = len(dividend_str) - len(str(current_num))
+    spaces = ' ' * last_pos
+    output_lines.append(f"{spaces}{current_num}")
 
-    return '\n'.join(stroki)
+    return '\n'.join(output_lines)
 
 
 def main():
@@ -108,6 +120,7 @@ def main():
     print(long_division(123456789, 531))
     print()
     print(long_division(425934261694251, 12345678))
+
 
 if __name__ == '__main__':
     main()
