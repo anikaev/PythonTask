@@ -1,98 +1,72 @@
-def long_division(dividend, divider):
-    '''
-       Вернуть строку с процедурой деления «уголком» чисел dividend и divider.
-       Формат вывода приведён на примерах ниже.
-
-       Примеры:
-       12345|25
-       100  |493
-        234
-        225
-          95
-          75
-          20
-
-       1234|1423
-       1234|0
-
-       24600|123
-       246  |200
-         0
-
-       246001|123
-       246   |2000
-            1
-    '''
+def long_division(dividend, divisor):
+    if dividend < divisor:
+        return f"{dividend}|{divisor}\n{dividend}|0"
 
     dividend_str = str(dividend)
-    divider_int = int(divider)
-    line = []
+    divisor_str = str(divisor)
+    result = f"{dividend_str}|{divisor_str}\n"
 
-    if divider_int == 0:
-        return f"{dividend_str}|{divider_int}\n"
-
-    if dividend < divider_int:
-        line.append(f"{dividend_str}|{divider_int}")
-        line.append(f"{' ' * len(dividend_str)}|0")
-        return '\n'.join(line)
-
-
-    idx = 0
-    nw_num = int(dividend_str[idx])
-    chis = ''
-    step = []
+    numstr = ''
+    rem = 0
+    fr_div = True
     pos = []
 
-    while (idx < len(dividend_str)):
+    for idx, digit in enumerate(dividend_str):
+        rem = rem * 10 + int(digit)
+        if rem < divisor:
+            numstr += '0'
+            continue
+        par_qu = rem // divisor
+        numstr += str(par_qu)
+        par_pr = par_qu * divisor
+        rem -= par_pr
 
-        while nw_num < divider_int and idx + 1 < len(dividend_str):
-            idx += 1
-            nw_num = nw_num * 10 + int(dividend_str[idx])
-            if len(chis) > 0:
-                chis += '0'
+        par_l = len(str(par_pr))
+        cur_ind = idx - par_l + 1
+        pos.append((cur_ind, par_pr))
 
-        if nw_num < divider_int and idx + 1 == len(dividend_str):
-            chis += '0'
+        if not fr_div:
+            result += (' ' * cur_ind +
+                       str(rem + par_pr) + '\n')
+        else:
+            fr_div = False
+
+        result += (' ' * cur_ind +
+                   str(par_pr) + '\n')
+
+    if rem != 0:
+        fin_ind = (len(dividend_str) -
+                   len(str(rem)))
+        result += (' ' * fin_ind +
+                   str(rem))
+    else:
+        if pos:
+            l_ind, l_pr = pos[-1]
+            result += (' ' * (l_ind
+                              + len(str(l_pr)) - 1)
+                       + '0')
+        else:
+            result += (' ' * (len(dividend_str) - 1)
+                       + '0')
+
+    lines = result.split('\n')
+    for i, line in enumerate(lines):
+        if ('|' not in line and line.strip().isdigit()):
+            qu = (len(dividend_str) -
+                  len(line.strip()))
+            if numstr.lstrip("0"):
+                lines[i] += (' ' * qu + f"|{int(numstr.lstrip('0'))}")
+            else:
+                lines[i] += (' ' * qu + f"|0")
             break
 
-        quot = nw_num // divider_int
-        prd = quot * divider_int
-        pm = nw_num - prd
-        chis += str(quot)
-        pos.append(idx - len(str(nw_num)) + 1)
-        step.append((pos[-1], nw_num, prd))
-        idx += 1
-        if idx < len(dividend_str):
-            nw_num = pm * 10 + int(dividend_str[idx])
-        else:
-            nw_num = pm
+    result = '\n'.join(lines)
 
-    line.append(f"{dividend_str}|{divider_int}")
-
-
-    first_pos = step[0][0]
-    first_prd = step[0][2]
-    spac_bf_prd = ' ' * first_pos
-    spaces_af_prd = ' ' * (len(dividend_str) - first_pos - len(str(first_prd)))
-    line.append(f"{spac_bf_prd}{first_prd}{spaces_af_prd}|{chis}")
-
-    for i in range(1, len(step)):
-        pos = step[i][0]
-        num = step[i][1]
-        prod = step[i][2]
-        spaces = ' ' * pos
-        line.append(f"{spaces}{num}")
-        line.append(f"{spaces}{prod}")
-
-    last_pos = len(dividend_str) - len(str(nw_num))
-    spaces = ' ' * last_pos
-    line.append(f"{spaces}{nw_num}")
-
-    return '\n'.join(line)
+    return result
 
 
 def main():
-    print(long_division(123, 123))
+    print(long_division(100000, 500))
     print()
     print(long_division(1, 1))
     print()
@@ -114,7 +88,7 @@ def main():
     print()
     print(long_division(123456789, 531))
     print()
-    print(long_division(425934261694251, 12345678))
+
 
 if __name__ == '__main__':
     main()
